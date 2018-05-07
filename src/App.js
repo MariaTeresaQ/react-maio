@@ -36,7 +36,42 @@ const ToDo = ({titulo, data, estado}) => {
 
 
 class App extends Component {
+  constructor(props){
+    super(props); // estamos a passar os props para o super, que é a class que está a ser extendida pela app. estamos a invocar o construtor da class da componente
+    this.state = {
+      newDate: new Date()
+    }
+  }
+  componentWillMount(){
+    console.log("componentWillMount");
+    this.interval = setInterval(() => {
+      this.setState ({newDate: new Date()})
+    }, 1000)
+  }
+  componentDidMount(){
+    console.log("componentDidMount");
+  }
+  componentWillReceiveProps(){
+    console.log("componentWillReceiveProps");
+  }
+  shouldComponentUpdate(){
+    console.log("shouldComponentUpdate");
+    return this.state.newDate.getSeconds() % 2 === 0 ? true : false;
+  }
+  componentWillUpdate(){
+    console.log("componentWillUpdate");
+  }
+  componentDidUpdate(){
+    console.log("componentDidUpdate");
+  }
+  componentWillUnmount(){
+    console.log("componentWillUnmount");
+  }
+  componentDidUnmount(){
+    console.log("componentDidUnmount");
+  }
   render() {
+    console.log('render');
     return (
       <div className="App">
         <header className="App-header">
@@ -51,6 +86,10 @@ class App extends Component {
       <div>
         <Ul></Ul>
       </div> 
+
+      <div>
+        { !!this.state.newDate ? this.state.newDate.toLocaleString() : ""} {/* !! significa dupla negação */}
+      </div>
       
       </div>
     );
