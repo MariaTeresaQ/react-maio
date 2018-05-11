@@ -31,6 +31,24 @@ setInterval(function (){
     ReactDOM.render(<div>Acabou</div>, document.getElementById('root'));
 }, 5000);*/
 
+let ferrari = {
+    nome: "ferrari"
+}
+
+let porshe = {
+    nome: "porshe"
+}
+
+function sayMyName (prefix, sufix, s2){
+    console.log(prefix + " " + this.nome + " " + sufix, s2)
+}
+
+const sayMyNameFerrari = sayMyName.bind(ferrari, "Hi", "Sim senhor");
+sayMyNameFerrari("Pois");
+const sayMyNamePorshe = sayMyName.bind(porshe);
+sayMyNamePorshe();
+
+
 ReactDOM.render(<App newDate={new Date()}/>, document.getElementById('root'));
 
 //registerServiceWorker();

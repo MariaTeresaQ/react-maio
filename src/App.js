@@ -39,14 +39,26 @@ class App extends Component {
   constructor(props){
     super(props); // estamos a passar os props para o super, que é a class que está a ser extendida pela app. estamos a invocar o construtor da class da componente
     this.state = {
-      newDate: new Date()
+      newDate: new Date(),
+      greeting: "Bom dia",
+      ticking: true,
+      frase: "ainda nao esta aleatoria",//podia estar vazio, porque vai ser alterado antes do render
+      frases: [
+        "Roman Todd",
+        "Bernard Curry",
+        "Kenny Zimmerman",
+        "Doris Lowe"
+      ]
     }
+    this.toggleTick = this.toggleTick.bind(this)
+    this.handleNewPhraseClick = this.handleNewPhraseClick.bind(this)
   }
   componentWillMount(){
     console.log("componentWillMount");
-    this.interval = setInterval(() => {
-      this.setState ({newDate: new Date()})
-    }, 1000)
+    //this.interval = setInterval(() => this.tick(), 1000) 
+    //this.interval = setInterval(this.tick.bind(this), 1000) 
+    this.setupTick(this.state.ticking)
+    this.setRandomPhrase()
   }
   componentDidMount(){
     console.log("componentDidMount");
@@ -56,7 +68,7 @@ class App extends Component {
   }
   shouldComponentUpdate(){
     console.log("shouldComponentUpdate");
-    return this.state.newDate.getSeconds() % 2 === 0 ? true : false;
+    return true //this.state.newDate.getSeconds() % 2 === 0 ? true : false;
   }
   componentWillUpdate(){
     console.log("componentWillUpdate");
@@ -67,8 +79,41 @@ class App extends Component {
   componentWillUnmount(){
     console.log("componentWillUnmount");
   }
+  setRandomPhrase(){
+    const frasesAUtilizar = this.state.frases;
+    let fraseIndex = Math.round(Math.random() * (frasesAUtilizar.length -1));
+    this.setState({frase: frasesAUtilizar[fraseIndex]});
+  }
+
+  handleNewPhraseClick(){
+    this.setRandomPhrase()
+  }
+  
   componentDidUnmount(){
     console.log("componentDidUnmount");
+  }
+  setupTick (doTick){
+    if (doTick){
+      this.interval = setInterval(this.tick.bind(this), 1000)
+      this.tick()
+    } else {
+      clearInterval(this.interval)
+    }
+  }
+  toggleTick(){
+    console.log(this.interval, "ToggleTick");
+    //let nextTickState = !this.state.ticking // ! é uma negação
+    this.setState(prevState => {
+      let nextTickState = !this.state.ticking
+      this.setupTick(nextTickState)
+      console.log(nextTickState)
+      return { //setState para mudar o estado, ou manipula lo
+      ticking: nextTickState
+    }
+    this.setupTick(nextTickState)
+  })};
+  tick (){
+    this.setState({newDate: new Date()} )
   }
   render() {
     console.log('render');
@@ -89,6 +134,35 @@ class App extends Component {
 
       <div>
         { !!this.state.newDate ? this.state.newDate.toLocaleString() : ""} {/* !! significa dupla negação */}
+      </div>
+
+      <div>
+        <button onClick={this.toggleTick}>
+        { this.state.ticking ? "Parar o relógio" : "Ligar relógio" }
+        </button>
+      </div>
+
+      <div>
+        <p>{ this.state.ticking ? "está ticking" : "não está ticking" }
+        </p>
+      </div>
+
+      <div>
+        <p>
+          Frase aleatória é: {this.state.frase}
+        </p>
+        <button onClick={this.handleNewPhraseClick}>Muda aí o nome
+        </button>
+      </div>
+
+      <div>
+        <ul>
+          {this.state.frases.map((item, index) => {
+            return <li key={"frase" + index}>
+            {item}
+            </li>
+          })}
+        </ul>
       </div>
       
       </div>
